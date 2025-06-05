@@ -30,7 +30,7 @@
     }
     button {
       margin-top: 1.5rem;
-      background-color: #4CAF50;
+      background-color: #607183;
       color: white;
       font-size: 1rem;
       cursor: pointer;
@@ -47,11 +47,11 @@
     <label for="building">건물 이름</label>
     <select name="building" id="building" required>
       <option value="">선택하세요</option>
-      <option value="도서관">도서관</option>
-      <option value="사회과학관">사회과학관</option>
-      <option value="사이버관">사이버관</option>
-      <option value="인문과학관">인문과학관</option>
-      <option value="교수학습개발원">교수학습개발원</option>
+      <option value="Lib">도서관</option>
+      <option value="SocSci">사회과학관</option>
+      <option value="Cyber">사이버관</option>
+      <option value="Human">인문과학관</option>
+      <option value="EDU">교수학습개발원</option>
     </select>
 
     <label for="floor">층</label>
@@ -60,7 +60,7 @@
     </select>
 
     <label for="issue">민원 내용</label>
-    <select id="issue" required>
+    <select name="issue" id="issue" required>
       <option value="">선택하세요</option>
       <option value="쓰레기 넘침">쓰레기 넘침</option>
       <option value="벌레">벌레</option>
@@ -84,11 +84,11 @@
     const buildingSelect = document.getElementById("building");
     const floorSelect = document.getElementById("floor");
     const floorOptions = {
-      "도서관": 6,
-      "사회과학관": 5,
-      "사이버관": 8,
-      "인문과학관": 6,
-      "교수학습개발원": 6
+      "Lib": 6,
+      "SocSci": 5,
+      "Cyber": 8,
+      "Human": 6,
+      "EDU": 6
     };
 
     buildingSelect.addEventListener("change", () => {
