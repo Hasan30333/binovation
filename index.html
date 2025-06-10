@@ -41,17 +41,17 @@
   </style>
 </head>
 <body>
-  <form action="http://3.107.139.2/" method="POST">
+  <form id="complaintForm">
     <h2>민원 접수</h2>
     
     <label for="building">건물 이름</label>
     <select name="building" id="building" required>
       <option value="">선택하세요</option>
-      <option value="Lib">도서관</option>
-      <option value="SocSci">사회과학관</option>
-      <option value="Cyber">사이버관</option>
-      <option value="Human">인문과학관</option>
-      <option value="EDU">교수학습개발원</option>
+      <option value="도서관">도서관</option>
+      <option value="사회과학관">사회과학관</option>
+      <option value="사이버관">사이버관</option>
+      <option value="인문과학관">인문과학관</option>
+      <option value="교수학습개발원">교수학습개발원</option>
     </select>
 
     <label for="floor">층</label>
@@ -59,8 +59,8 @@
       <option value="">건물을 먼저 선택하세요</option>
     </select>
 
-    <label for="issue">민원 내용</label>
-    <select name="issue" id="issue" required>
+    <label for="content">민원 내용</label>
+    <select name="content" id="content" required>
       <option value="">선택하세요</option>
       <option value="쓰레기 넘침">쓰레기 넘침</option>
       <option value="벌레">벌레</option>
@@ -70,10 +70,10 @@
     </select>
 
     <!-- 실제 전송될 input -->
-    <input type="hidden" name="issue" id="finalIssue" />
+    <input type="hidden" name="content" id="finalcontent" />
 
     <!-- 직접 입력창 -->
-    <input type="text" id="customIssueInput" placeholder="민원 내용을 입력하세요" style="display:none; margin-top:0.5rem; width:100%; padding:0.5rem; border-radius:5px; border:1px solid #ccc;" />
+    <input type="text" id="customcontentInput" placeholder="민원 내용을 입력하세요" style="display:none; margin-top:0.5rem; width:100%; padding:0.5rem; border-radius:5px; border:1px solid #ccc;" />
     
 
     <button type="submit">제출하기</button>
@@ -84,11 +84,11 @@
     const buildingSelect = document.getElementById("building");
     const floorSelect = document.getElementById("floor");
     const floorOptions = {
-      "Lib": 6,
-      "SocSci": 5,
-      "Cyber": 8,
-      "Human": 6,
-      "EDU": 6
+      "도서관": 6,
+      "사회과학관": 5,
+      "사이버관": 8,
+      "인문과학관": 6,
+      "교수학습개발원": 6
     };
 
     buildingSelect.addEventListener("change", () => {
@@ -113,29 +113,66 @@
 
 
     // 직접 입력창
-    const issueSelect = document.getElementById("issue");
-    const customInput = document.getElementById("customIssueInput");
-    const finalIssue = document.getElementById("finalIssue");
+    const contentSelect = document.getElementById("content");
+    const customInput = document.getElementById("customcontentInput");
+    const finalcontent = document.getElementById("finalcontent");
 
-    issueSelect.addEventListener("change", () => {
-        const selected = issueSelect.value;
+    contentSelect.addEventListener("change", () => {
+        const selected = contentSelect.value;
 
         if (selected === "custom") {
             customInput.style.display = "block";
             customInput.required = true;
-            finalIssue.value = ""; // 초기화
+            finalcontent.value = ""; // 초기화
         } else {
             customInput.style.display = "none";
             customInput.required = false;
-            finalIssue.value = selected;
+            finalcontent.value = selected;
         }
      });
 
   // 직접 입력 내용이 바뀔 때마다 hidden input에 반영
     customInput.addEventListener("input", () => {
-        finalIssue.value = customInput.value;
+        finalcontent.value = customInput.value;
     });
     
+
+    document.getElementById("complaintForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // 기본 form 제출 막기
+
+    const building = document.getElementById("building").value;
+    const floor = document.getElementById("floor").value.replace("층", ""); // 숫자만
+    const contentSelect = document.getElementById("content").value;
+    const customContent = document.getElementById("customcontentInput").value;
+
+    // 직접입력이면 그 값을, 아니면 선택값을 사용
+    const content = contentSelect === "custom" ? customContent : contentSelect;
+
+    const data = {
+      building: building,
+      floor: parseInt(floor),
+      content: content
+    };
+
+    fetch("http://3.107.139.2/trash/complaints/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => {
+      if (res.ok) {
+        alert("민원이 접수되었습니다.");
+      } else {
+        alert("다시 시도해주세요.");
+      }
+    })
+    .catch(err => {
+      alert("오류 발생: " + err.message);
+    });
+  });
+  
   </script>
 </body>
 </html>
